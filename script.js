@@ -1,3 +1,7 @@
+// ===================
+// DATOS DE MATERIAS
+// ===================
+
 const materias = {
   "APH: Primeros Auxilios": { prerrequisitos: [], correquisitos: [], nivel: 1 },
   "Salud y Sociedad I": { prerrequisitos: [], correquisitos: [], nivel: 1 },
@@ -54,15 +58,22 @@ const materias = {
   "Urgencias Ortopédicas": { prerrequisitos: ["Vejez", "Cáncer", "Adultez IV: Resolución Actualizada"], correquisitos: [], nivel: 13 },
   "Atención Primaria en Salud II": { prerrequisitos: ["Vejez", "Cáncer", "Adultez IV: Resolución Actualizada"], correquisitos: [], nivel: 13 }
 };
-  // ... (continúa con todas las demás materias, usando mismo formato)
-];
+
+// ======================
+// ORGANIZAR POR SEMESTRE
+// ======================
 
 const niveles = {};
 
-materias.forEach(m => {
-  if (!niveles[m.nivel]) niveles[m.nivel] = [];
-  niveles[m.nivel].push(m);
+Object.entries(materias).forEach(([nombre, datos]) => {
+  const materia = { nombre, ...datos };
+  if (!niveles[materia.nivel]) niveles[materia.nivel] = [];
+  niveles[materia.nivel].push(materia);
 });
+
+// =====================
+// CREAR MALLA INTERACTIVA
+// =====================
 
 function crearMalla() {
   const malla = document.getElementById("malla");
@@ -74,6 +85,7 @@ function crearMalla() {
       const columna = document.createElement("div");
       columna.className = "columna";
       columna.innerHTML = `<h2>Semestre ${nivel}</h2>`;
+
       niveles[nivel].forEach(materia => {
         const div = document.createElement("div");
         div.className = "materia bloqueada";
@@ -81,21 +93,30 @@ function crearMalla() {
         div.onclick = () => toggleMateria(materia.nombre);
         columna.appendChild(div);
       });
+
       malla.appendChild(columna);
     });
 
   actualizarEstados();
 }
 
+// ====================
+// INTERACCIÓN: TOGGLE
+// ====================
+
 function toggleMateria(nombre) {
-  const div = document.querySelectorAll(".materia");
-  div.forEach(el => {
+  const materiasDOM = document.querySelectorAll(".materia");
+  materiasDOM.forEach(el => {
     if (el.textContent === nombre) {
       el.classList.toggle("cursada");
     }
   });
   actualizarEstados();
 }
+
+// ====================
+// ACTUALIZAR ESTADOS
+// ====================
 
 function actualizarEstados() {
   const cursadas = new Set(
@@ -104,16 +125,15 @@ function actualizarEstados() {
     )
   );
 
-  materias.forEach(m => {
+  Object.entries(materias).forEach(([nombre, datos]) => {
     const div = Array.from(document.querySelectorAll(".materia")).find(
-      el => el.textContent === m.nombre
+      el => el.textContent === nombre
     );
 
-    const prereqCumplidos = m.prerrequisitos.every(p => cursadas.has(p));
-    const correq = m.correquisitos;
+    const prereqCumplidos = datos.prerrequisitos.every(p => cursadas.has(p));
     const puedeTomar = prereqCumplidos;
 
-    if (cursadas.has(m.nombre)) {
+    if (cursadas.has(nombre)) {
       div.className = "materia cursada";
     } else if (puedeTomar) {
       div.className = "materia disponible";
@@ -122,5 +142,9 @@ function actualizarEstados() {
     }
   });
 }
+
+// ================
+// INICIAR AL CARGAR
+// ================
 
 window.onload = crearMalla;
