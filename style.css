@@ -1,1 +1,53 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
 
+h1 {
+  text-align: center;
+}
+
+#malla {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  overflow-x: auto;
+}
+
+.columna {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  width: 220px;
+  min-width: 220px;
+  background-color: #f9f9f9;
+}
+
+.columna h2 {
+  text-align: center;
+}
+
+.materia {
+  margin: 6px 0;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.materia.bloqueada {
+  background: #eee;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.materia.disponible {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.materia.cursada {
+  background: #b2fcb4;
+  color: #155724;
+}
